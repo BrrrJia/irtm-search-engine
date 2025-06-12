@@ -80,10 +80,6 @@ irtm-search-engine/
 
 ## ⚙️ Installation & Usage
 
-好的，以下是你可以**直接复制粘贴进 `README.md`** 的完整 CLI 使用说明段落，格式已适配 markdown：
-
----
-
 ### 🧪 Local CLI (Interactive Mode)
 
 Run the CLI tool interactively:
