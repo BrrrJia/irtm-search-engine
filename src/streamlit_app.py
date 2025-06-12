@@ -16,7 +16,7 @@ st.set_page_config(
 )
 
 # API base configuration
-API_BASE_URL = st.sidebar.text_input("API Base URL", "http://localhost:8000")
+API_BASE_URL = st.sidebar.text_input("API Base URL", "https://irtm-search-engine.onrender.com")
 
 # Custom CSS styles
 st.markdown("""
