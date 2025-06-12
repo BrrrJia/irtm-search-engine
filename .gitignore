@@ -1,1 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+*.pyd
+*.pyo
+
+# Environments
 .env
+.venv/
+env/
+venv/
+*.env
+*.dev.env
+
+# Jupyter/IPython
+.ipynb_checkpoints
+
+# Logs
+*.log
+
+# Mac OS / VS Code / system files
+.DS_Store
+.vscode/
+.idea/
+
+# Coverage / testing
+.coverage
+htmlcov/
+.tox/
+.nox/
+pytest_cache/
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# FastAPI / Uvicorn cache
+*.db
+instance/
