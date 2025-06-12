@@ -61,13 +61,14 @@ irtm-search-engine/
 │   │       └── evaluate.py
 │   ├── cli/                  # CLI interface
 │   │   └── main.py
-│   └── core/                 # Core logic modules
-│       ├── indexing.py
-│       ├── retrieval.py
-│       ├── classification.py
-│       ├── clustering.py
-│       ├── utils.py
-│       └── config.py
+│   |── core/                 # Core logic modules
+│   |   ├── indexing.py
+│   |   ├── retrieval.py
+│   |   ├── classification.py
+│   |   ├── clustering.py
+│   |   ├── utils.py
+│   |   └── config.py
+|   └── streamlit_app.py      # Streamlit frontend
 ├── tests/                    # Pytest test files
 │   └── test_api.py
 ├── requirements.txt          # Python dependencies
