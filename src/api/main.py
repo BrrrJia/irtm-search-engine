@@ -99,7 +99,7 @@ async def initialize_components():
         inv_game = InvertedIndex(config.TRAIN_PATH)
         inv_game.index()
         inv_game.build_tfidf_matrix()
-        data = normalize(inv_game.tfidf_matrix[:50], norm="l2")
+        data = normalize(inv_game.tfidf_matrix[:config.K_MEANS_DATA_SIZE], norm="l2")
         logger.info("Clustering data prepared successfully")
 
         app.state.data = data
