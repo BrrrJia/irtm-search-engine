@@ -30,7 +30,7 @@ venv/
 htmlcov/
 .tox/
 .nox/
-pytest_cache/
+.pytest_cache/
 
 # Docker
 *.pid
