@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 from PIL import Image
 import io
+from .core import config
 
 # Page configuration
 st.set_page_config(
@@ -16,7 +17,7 @@ st.set_page_config(
 )
 
 # API base configuration
-API_BASE_URL = st.sidebar.text_input("API Base URL", "https://irtm-search-engine.onrender.com")
+API_BASE_URL = st.sidebar.text_input("API Base URL", config.API_BASE_URL)
 
 # Custom CSS styles
 st.markdown("""
