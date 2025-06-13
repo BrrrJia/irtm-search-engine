@@ -4,10 +4,9 @@ FROM python:3.11-slim
 # Set the working directory
 WORKDIR /app
 
-# Install OS dependencies (for numpy, pandas, spaCy, etc.)
+# Install OS dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential && \
-    #apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install them
@@ -17,13 +16,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Download NLTK stopwords data
 RUN python -m nltk.downloader stopwords
 
-# 5. Copy your code into the container
+# Copy your code into the container
 COPY . .
 
-# 7. Expose the FastAPI port
-EXPOSE 8000
+# Copy the startup script and set permissions
+COPY start.sh .
+RUN chmod +x start.sh
 
-# 8. Set the default command to start FastAPI using Uvicorn
-# Change api:app to match the module and app variable in your project!
+# Expose ports
+EXPOSE 8000 8501
+
+# Execution
+CMD ["./start.sh"]
 #CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"] # for FastAPI
-CMD ["bash", "start.sh"]
