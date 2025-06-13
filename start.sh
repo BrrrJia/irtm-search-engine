@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Ensure script to exit on error
 set -e
 
