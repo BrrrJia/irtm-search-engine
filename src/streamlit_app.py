@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 from PIL import Image
 import io
-from .core import config
+from core import config
 
 # Page configuration
 st.set_page_config(
