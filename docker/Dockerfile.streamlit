@@ -11,8 +11,10 @@ RUN python -m nltk.downloader stopwords
 
 COPY . .
 
+ENV PORT=8501
+
 CMD ["streamlit", "run", "src/streamlit_app.py", \
-     "--server.port=8501", \
+     "--server.port=$PORT", \
      "--server.address=0.0.0.0", \
      "--server.enableCORS=false", \
      "--server.enableXsrfProtection=false"]

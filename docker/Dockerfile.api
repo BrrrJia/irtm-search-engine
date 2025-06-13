@@ -19,5 +19,7 @@ RUN python -m nltk.downloader stopwords
 # Copy your code into the container
 COPY . .
 
+ENV PORT=8000
+
 # Execution
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD bash -c "uvicorn src.api.main:app --host 0.0.0.0 --port $PORT"
