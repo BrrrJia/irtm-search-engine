@@ -19,10 +19,5 @@ RUN python -m nltk.downloader stopwords
 # Copy your code into the container
 COPY . .
 
-# Copy the startup script and set permissions
-COPY start.sh .
-RUN chmod +x start.sh
-
 # Execution
-CMD ["./start.sh"]
-#CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"] # for FastAPI
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

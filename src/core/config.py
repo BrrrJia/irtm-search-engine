@@ -17,4 +17,4 @@ USE_OPTIMAL_KMEANS = os.getenv("USE_OPTIMAL_KMEANS", "False") == "True"
 K_MEANS_K = int(os.getenv("K_MEANS_K", 20))
 K_MEANS_N_INIT = int(os.getenv("K_MEANS_N_INIT", 50))
 
-API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8000')
+API_BASE_URL = os.getenv('API_BASE_URL', 'https://irtm-api.onrender.com')
