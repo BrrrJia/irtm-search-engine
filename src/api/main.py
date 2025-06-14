@@ -35,6 +35,14 @@ app = FastAPI(
     openapi_tags=tags_metadata,
 )
 
+@app.get("/")
+def root():
+    return {
+        "status": "API is running",
+        "docs": "/docs",
+        "endpoints": ["/search", "/classify", "/clustering"]
+    }
+
 app.include_router(search.router)
 app.include_router(classify.router)
 app.include_router(evaluate.router)
