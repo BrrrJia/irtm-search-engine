@@ -88,7 +88,7 @@ if selected_function == "🔍 Document Search":
     col1, col2 = st.columns([3, 1])
     
     with col1:
-        query = st.text_input("🔍 Enter search query", placeholder="e.g., slee* cat, sleepy cat, side effects vaccines")
+        query = st.text_input("🔍 Enter search query", placeholder="e.g., slee* cat, cancer detect*, mental health, side effects vaccines")
     
     with col2:
         search_mode = st.selectbox("Search Mode", ["term", "wildcard", "tfidf"])
