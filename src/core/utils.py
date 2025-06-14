@@ -4,7 +4,7 @@ import emoji
 import unicodedata
 import pandas as pd
 import csv
-import config
+from . import config
 
 EN_STOP = set(stopwords.words("english"))
 DE_STOP = set(stopwords.words("german"))
