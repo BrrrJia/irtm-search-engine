@@ -35,12 +35,18 @@ app = FastAPI(
     openapi_tags=tags_metadata,
 )
 
-@app.get("/")
+@app.get("/", tags=["status"])
 def root():
     return {
-        "status": "API is running",
-        "docs": "/docs",
-        "endpoints": ["/search", "/classify", "/clustering"]
+        "project": "IRTM API",
+        "status": "✅ API is running",
+        "documentation": "/docs",
+        "available_endpoints": [
+            "/search",
+            "/classify",
+            "/evaluate",
+            "/clustering"
+        ]
     }
 
 app.include_router(search.router)
