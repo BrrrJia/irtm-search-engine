@@ -47,7 +47,7 @@ def process_row(df):
         yield (terms, doc_id)
 
 
-def read_data(filename, cls=False, limit=None):
+def read_data(filename, cls=False, limit=50000):
     if cls:
         df = pd.read_csv(
             filename,
