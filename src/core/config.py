@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+INDEX_DATA_SIZE = int(os.getenv("INDEX_DATA_SIZE", 5000))
 DATA_PATH = os.getenv("DATA_PATH", "data/tweets.csv")
 
 USE_BIGRAM = os.getenv("USE_BIGRAM", "True") == "True"

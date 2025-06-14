@@ -4,6 +4,7 @@ import emoji
 import unicodedata
 import pandas as pd
 import csv
+import config
 
 EN_STOP = set(stopwords.words("english"))
 DE_STOP = set(stopwords.words("german"))
@@ -47,7 +48,7 @@ def process_row(df):
         yield (terms, doc_id)
 
 
-def read_data(filename, cls=False, limit=50000):
+def read_data(filename, cls=False, limit=config.INDEX_DATA_SIZE):
     if cls:
         df = pd.read_csv(
             filename,
@@ -70,6 +71,7 @@ def read_data(filename, cls=False, limit=50000):
             encoding="utf-8",
             engine="python",
             quoting=csv.QUOTE_NONE,
+            nrows=limit
         )
         df["text"] = df[["name", "title", "review"]].fillna("").agg(" ".join, axis=1)
         df = df.drop(["name", "title", "review"], axis=1)
@@ -84,10 +86,11 @@ def read_data(filename, cls=False, limit=50000):
             encoding="utf-8",
             engine="python",
             quoting=csv.QUOTE_NONE,
+            nrows=limit
         )
         df = df.drop_duplicates(subset="tweetID", keep="first").reset_index(
             drop=True
         )  # drop the duplicated lines
 
     df["docID"] = list(range(1, len(df) + 1))
-    return df.iloc[:limit]
+    return df
