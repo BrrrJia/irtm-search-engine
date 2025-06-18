@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 from PIL import Image
 import io
-from ..backend.core import config
+from .backend.core import config
 import os
 import streamlit.web.cli as stcli
 import sys
