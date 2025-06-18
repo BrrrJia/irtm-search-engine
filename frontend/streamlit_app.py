@@ -6,7 +6,6 @@ import time
 from datetime import datetime
 from PIL import Image
 import io
-from backend.core import config
 import os
 import streamlit.web.cli as stcli
 import sys
@@ -37,7 +36,7 @@ st.set_page_config(
 )
 
 # get the api url
-API_BASE_URL = config.API_BASE_URL
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 
 # waiting for api service before executing
 if 'api_ready' not in st.session_state:
