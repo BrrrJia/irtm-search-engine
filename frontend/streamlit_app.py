@@ -515,7 +515,7 @@ if st.session_state.get('api_ready', False):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8501))
     sys.argv = [
-        "streamlit", "run", "app.py",
+        "streamlit", "run", "streamlit_app.py",
         "--server.port", str(port),
         "--server.address", "0.0.0.0",
         "--server.enableCORS", "false",
