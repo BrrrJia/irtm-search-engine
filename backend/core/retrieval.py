@@ -1,4 +1,4 @@
-from ..core.utils import preprocess
+from .utils import preprocess
 import time
 import numpy as np
 import math

@@ -1,4 +1,4 @@
-from ..core.utils import preprocess, read_data
+from .utils import preprocess, read_data
 import math
 from collections import defaultdict, Counter
 from tqdm import tqdm

@@ -1,5 +1,5 @@
-from ..core.structures import PostingsLinkedList
-from ..core.utils import read_data, process_row, preprocess
+from .structures import PostingsLinkedList
+from .utils import read_data, process_row, preprocess
 from collections import defaultdict
 import math
 from tqdm.auto import tqdm
