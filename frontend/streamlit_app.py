@@ -7,8 +7,6 @@ from datetime import datetime
 from PIL import Image
 import io
 import os
-import streamlit.web.cli as stcli
-import sys
 
 
 def wait_for_api(api_url, timeout=180, interval=10):
@@ -509,15 +507,3 @@ if st.session_state.get('api_ready', False):
         Built with Streamlit & FastAPI | 📧 Contact: youjiaim@protonmail.com
     </div>
     """, unsafe_allow_html=True)
-
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8501))
-    sys.argv = [
-        "streamlit", "run", "streamlit_app.py",
-        "--server.port", str(port),
-        "--server.address", "0.0.0.0",
-        "--server.enableCORS", "false",
-        "--server.enableXsrfProtection", "false"
-    ]
-    sys.exit(stcli.main())
