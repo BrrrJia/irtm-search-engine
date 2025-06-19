@@ -21,5 +21,8 @@ ENV NLTK_DATA=/usr/local/nltk_data
 # Copy your code into the container
 COPY . .
 
+# & Build cache
+RUN python build_precompute.py
+
 # Execution
 CMD ["python", "-m", "api.main"]
