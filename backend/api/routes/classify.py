@@ -1,6 +1,6 @@
-from ...core.utils import preprocess
-from ..exceptions import ClassificationError
-from ..models import ClassificationResponse, ClassificationRequest
+from backend.core.utils import preprocess
+from backend.api.exceptions import ClassificationError
+from backend.api.models import ClassificationResponse, ClassificationRequest
 from fastapi import APIRouter, HTTPException, Request, status
 import logging
 

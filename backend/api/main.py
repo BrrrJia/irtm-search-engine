@@ -1,8 +1,8 @@
-from ..core.indexing import InvertedIndex
-from ..core.retrieval import RetrievalEngine
-from ..core import config
-from ..core.classification import NaiveBayesClassifier
-from .routes import search, classify, evaluate, clustering
+from backend.core.indexing import InvertedIndex
+from backend.core.retrieval import RetrievalEngine
+from backend.core import config
+from backend.core.classification import NaiveBayesClassifier
+from backend.api.routes import search, classify, evaluate, clustering
 from fastapi import FastAPI
 import logging
 from sklearn.preprocessing import normalize

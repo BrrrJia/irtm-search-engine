@@ -1,8 +1,8 @@
-from ..core.indexing import InvertedIndex
-from ..core import config
-from ..core.retrieval import RetrievalEngine
-from ..core.classification import NaiveBayesClassifier
-from ..core.clustering import k_means, optimal_k_means, plot_clusters
+from backend.core.indexing import InvertedIndex
+from backend.core import config
+from backend.core.retrieval import RetrievalEngine
+from backend.core.classification import NaiveBayesClassifier
+from backend.core.clustering import k_means, optimal_k_means, plot_clusters
 from sklearn.preprocessing import normalize
 import numpy as np
 import argparse
