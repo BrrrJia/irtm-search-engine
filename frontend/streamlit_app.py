@@ -6,22 +6,26 @@ import time
 from datetime import datetime
 from PIL import Image
 import os
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def wait_for_api(api_url, timeout=180, interval=10):
     start_time = time.time()
     while time.time() - start_time < timeout:
         try:
-            response = requests.get(f"{api_url}/docs", timeout=10)
+            response = requests.get(f"{api_url}/health", timeout=10)
             if response.status_code == 200:
+                logger.info("API is available.")
                 return True
         except requests.RequestException:
-            pass
-        
-        # show waiting information
-        print(f"⏳ Waiting for API at {api_url} to become available...")
+            logger.info(f"Waiting for API at {api_url}...")
         time.sleep(interval)
     
+    logger.error("API startup timed out.")
     return False
 
 # Page configuration
@@ -34,6 +38,7 @@ st.set_page_config(
 
 # get the api url
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
+logger.info(f"Using API_BASE_URL: {API_BASE_URL}")
 
 # waiting for api service before executing
 if 'api_ready' not in st.session_state:
@@ -43,6 +48,7 @@ if 'api_ready' not in st.session_state:
         if wait_for_api(API_BASE_URL):
             st.session_state.api_ready = True
             st.success("API service is ready, loading application...")
+            logger.info("API service ready, rerunning streamlit app.")
             st.rerun()
         else:
             st.error("API service runs timeout，Please check its status.")
@@ -148,7 +154,13 @@ if st.session_state.get('api_ready', False):
                         end_time = time.time()
                         
                         if response.status_code == 200:
-                            results = response.json()
+                            try:
+                                result = response.json()
+                            except ValueError as e:
+                                logger.error(f"Failed to parse JSON: {e}")
+                                st.error("⚠️ API returned invalid JSON response.")
+                                st.stop()
+
                             search_time = end_time - start_time
                             
                             # Display search statistics
@@ -238,7 +250,12 @@ if st.session_state.get('api_ready', False):
                         response = requests.post(f"{API_BASE_URL}/classify", json=data)
                         
                         if response.status_code == 200:
-                            result = response.json()
+                            try:
+                                result = response.json()
+                            except ValueError as e:
+                                logger.error(f"Failed to parse JSON: {e}")
+                                st.error("⚠️ API returned invalid JSON response.")
+                                st.stop()
                             
                             # Display classification result
                             col1, col2, col3 = st.columns(3)
@@ -302,7 +319,12 @@ if st.session_state.get('api_ready', False):
                                     response = requests.post(f"{API_BASE_URL}/classify", json=data)
                                     
                                     if response.status_code == 200:
-                                        result = response.json()
+                                        try:
+                                            result = response.json()
+                                        except ValueError as e:
+                                            logger.error(f"Failed to parse JSON: {e}")
+                                            st.error("⚠️ API returned invalid JSON response.")
+                                            st.stop()
                                         results.append({
                                             'row_index': i,
                                             'name': data['name'][:50] + '...' if len(data['name']) > 50 else data['name'],
@@ -414,7 +436,12 @@ if st.session_state.get('api_ready', False):
                     response = requests.get(f"{API_BASE_URL}/classify/evaluate")
                     
                     if response.status_code == 200:
-                        result = response.json()
+                        try:
+                            result = response.json()
+                        except ValueError as e:
+                            logger.error(f"Failed to parse JSON: {e}")
+                            st.error("⚠️ API returned invalid JSON response.")
+                            st.stop()
                         
                         st.success("✅ Model evaluation completed successfully")
                         
