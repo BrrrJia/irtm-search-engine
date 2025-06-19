@@ -1,6 +1,6 @@
-from backend.core import config
-from backend.core.clustering import k_means, optimal_k_means, plot_clusters
-from backend.api.exceptions import ClusteringError
+from core import config
+from core.clustering import k_means, optimal_k_means, plot_clusters
+from api.exceptions import ClusteringError
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 import logging

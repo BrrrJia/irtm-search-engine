@@ -1,6 +1,6 @@
-from backend.api.models import QueryResponse, Document
-from backend.api.exceptions import SearchError
-from backend.core import config
+from api.models import QueryResponse, Document
+from api.exceptions import SearchError
+from core import config
 from fastapi import APIRouter, Query, Request, HTTPException, status
 import logging
 

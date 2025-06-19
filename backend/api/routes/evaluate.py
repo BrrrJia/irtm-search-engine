@@ -1,5 +1,5 @@
-from backend.core import config
-from backend.api.exceptions import ClassificationError
+from core import config
+from api.exceptions import ClassificationError
 from fastapi import APIRouter, HTTPException, Request, status
 import logging
 from datetime import datetime
