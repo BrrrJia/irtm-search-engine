@@ -5,7 +5,6 @@ import plotly.express as px
 import time
 from datetime import datetime
 from PIL import Image
-import io
 import os
 
 
@@ -259,12 +258,6 @@ if st.session_state.get('api_ready', False):
                             
                             with col3:
                                 st.metric("Word Count", len(combined_text.split()))
-                            
-                            # Show input summary
-                            with st.expander("Input Summary"):
-                                st.write(f"**Name**: {name}")
-                                st.write(f"**Title**: {title}")
-                                st.write(f"**Review**: {review[:200]}..." if len(review) > 200 else review)
                         
                         elif response.status_code == 400:
                             st.error("❌ Invalid input data. Please check your text.")
