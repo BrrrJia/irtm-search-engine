@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 from PIL import Image
 import os
+import io
 import logging
 
 # Setup logging
@@ -155,7 +156,7 @@ if st.session_state.get('api_ready', False):
                         
                         if response.status_code == 200:
                             try:
-                                result = response.json()
+                                results = response.json()
                             except ValueError as e:
                                 logger.error(f"Failed to parse JSON: {e}")
                                 st.error("⚠️ API returned invalid JSON response.")
@@ -467,15 +468,15 @@ if st.session_state.get('api_ready', False):
                         performance_level = "Excellent" if accuracy > 0.9 else "Good" if accuracy > 0.8 else "Fair" if accuracy > 0.7 else "Poor"
                         
                         if accuracy > 0.8:
-                            st.success(f"🎯 **{performance_level}** classification performance (Accuracy: {accuracy:.1%})")
+                            st.success(f"🎯 **{performance_level}** classification performance (Accuracy: {accuracy:.2%})")
                         elif accuracy > 0.6:
-                            st.warning(f"⚠️ **{performance_level}** classification performance (Accuracy: {accuracy:.1%})")
+                            st.warning(f"⚠️ **{performance_level}** classification performance (Accuracy: {accuracy:.2%})")
                         else:
-                            st.error(f"❌ **{performance_level}** classification performance (Accuracy: {accuracy:.1%})")
+                            st.error(f"❌ **{performance_level}** classification performance (Accuracy: {accuracy:.2%})")
                         
                         
                         # Performance guidelines
-                        with st.expander("Metric Definitions"):
+                        with st.expander("ℹ️ Metric Definitions"):
                             st.write("**Accuracy**: Proportion of correct predictions among total predictions")
                             st.write("**F1 Score**: Harmonic mean of precision and recall")
                             st.write("**Performance Levels**:")
