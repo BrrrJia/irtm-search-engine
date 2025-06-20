@@ -6,6 +6,7 @@ from tqdm.auto import tqdm
 from scipy.sparse import lil_matrix, csr_matrix
 from collections import Counter
 import numpy as np
+import joblib
 
 
 class InvertedIndex:
@@ -107,3 +108,9 @@ class InvertedIndex:
                 self.tfidf_matrix[i, j] = tf * self.idf_vector[j]
 
         self.tfidf_matrix = self.tfidf_matrix.tocsr()
+
+
+    def save(self):
+        joblib.dump(self.postings_store, "prebuilt/postings_store.pkl")
+        self.postings_store = None
+        joblib.dump(self, "prebuilt/inverted_index.pkl")

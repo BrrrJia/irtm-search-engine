@@ -9,8 +9,9 @@ import os
 
 
 def k_means(data, k=2, seed=42, max_iter=100, tolerance=1e-4):
-    np.random.seed(seed)
     data = data.toarray()
+
+    np.random.seed(seed)
 
     # compute the distance and classify
     classes = np.zeros(data.shape[0], dtype=int)

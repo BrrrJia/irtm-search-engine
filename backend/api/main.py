@@ -10,7 +10,7 @@ from sklearn.preprocessing import normalize
 import os
 import uvicorn
 import joblib
-import numpy as np
+from scipy.sparse import load_npz
 
 
 # Configure logging
@@ -87,23 +87,24 @@ async def initialize_components():
     # === Inverted Index + TF-IDF ===
     try:
         logger.info("Loading inverted index from prebuilt cache...")
-        inv_dict = joblib.load("prebuilt/inverted_index_dict.pkl")
-        
-        inv_dict["postings_store"] = {pid: PostingsLinkedList.from_list(plist) 
-                                      for pid,plist in inv_dict["postings_store"].items()} # restore postings list from serialisation
-        tfidf_matrix = np.load("prebuilt/tfidf_matrix.npy",  allow_pickle=True)
+        inv = joblib.load("prebuilt/inverted_index.pkl")
+        inv.postings_store = joblib.load("prebuilt/postings_store.pkl")
+        inv.postings_store = {pid: PostingsLinkedList.from_list(plist) 
+                                      for pid,plist in inv.postings_store.items()} # restore postings list from serialisation
+        inv.tfidf_matrix = load_npz("prebuilt/tfidf_matrix.npz")
+        print("tf idf matrix type", inv.tfidf_matrix.shape)
 
         ret = RetrievalEngine(
-            inv_dict["term_dictionary"],
-            inv_dict["postings_store"],
-            inv_dict["df"],
-            inv_dict["bigram_dictionary"],
-            inv_dict["permuterm_dictionary"],
-            inv_dict["term_to_index"],
-            inv_dict["idf_vector"],
-            tfidf_matrix
+            inv.term_dictionary,
+            inv.postings_store,
+            inv.df,
+            inv.bigram_dictionary,
+            inv.permuterm_dictionary,
+            inv.term_to_index,
+            inv.idf_vector,
+            inv.tfidf_matrix
         )
-        app.state.inv = inv_dict
+        app.state.inv = inv
         app.state.ret = ret
         logger.info("Inverted index & retrieval engine loaded from cache.")
     except Exception as e:
@@ -155,7 +156,7 @@ async def initialize_components():
     # === Clustering data ===
     try:
         logger.info("Loading clustering data from cache...")
-        data = np.load("prebuilt/clustering_data.npy", allow_pickle=True)
+        data = load_npz("prebuilt/clustering_data.npz")
         app.state.data = data
         logger.info("Clustering data loaded.")
     except Exception as e:
