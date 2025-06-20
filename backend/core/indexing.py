@@ -112,5 +112,7 @@ class InvertedIndex:
 
     def save(self):
         joblib.dump(self.postings_store, "prebuilt/postings_store.pkl")
+        # set the attributes empty for individual save
         self.postings_store = None
+        self.tfidf_matrix = None
         joblib.dump(self, "prebuilt/inverted_index.pkl")

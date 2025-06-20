@@ -27,10 +27,12 @@ if config.USE_PERMUTERM:
     inv.permuterm_index()
 
 inv.postings_store = serialize_postings(inv.postings_store)
-inv.save()
 
 inv.build_tfidf_matrix()
+
 save_npz("prebuilt/tfidf_matrix.npz", inv.tfidf_matrix)
+
+inv.save()
 
 print("Inverted index saved.")
 
