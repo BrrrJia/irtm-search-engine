@@ -1,0 +1,41 @@
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.api
+    container_name: irtm-api
+    ports:
+      - "8000:8000"
+    working_dir: /app
+    command: ["python", "-m", "api.main"]
+    volumes:
+      - ./backend:/app
+    environment:
+      - PYTHONPATH=/app
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.streamlit
+    container_name: irtm-ui
+    ports:
+      - "8501:8501"
+    working_dir: /app
+    command:
+      [
+        "streamlit",
+        "run",
+        "streamlit_app.py",
+        "--server.port=8501",
+        "--server.address=0.0.0.0",
+        "--server.enableCORS=false",
+        "--server.enableXsrfProtection=false",
+      ]
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - api
+    environment:
+      - API_BASE_URL=http://api:8000
+    restart: unless-stopped

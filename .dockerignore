@@ -1,0 +1,24 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+env/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# Logs and environment files
+*.log
+*.env
+
+# Optional: skip build artifacts
+prebuilt/
+output/
