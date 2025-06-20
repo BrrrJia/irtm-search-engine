@@ -22,7 +22,7 @@ ENV NLTK_DATA=/usr/local/nltk_data
 COPY . .
 
 # & Build cache
-RUN python build_precompute.py
+RUN python build_precompute.py || echo "⚠️ Failed to precompute (will fallback to runtime rebuild)."
 
 # Execution
 CMD ["python", "-m", "api.main"]
