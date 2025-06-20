@@ -6,6 +6,13 @@ from core.classification import NaiveBayesClassifier
 from sklearn.preprocessing import normalize
 from core import config
 
+
+# --- Helpers ---
+def serialize_postings(postings_store):
+    return {
+        pid: plist.to_list() for pid, plist in postings_store.items()
+    }
+
 # create folder for pre-built data
 os.makedirs("prebuilt", exist_ok=True)
 
@@ -22,7 +29,7 @@ inv.build_tfidf_matrix()
 
 joblib.dump({
     "term_dictionary": inv.term_dictionary,
-    "postings_store": inv.postings_store,
+    "postings_store":  serialize_postings(inv.postings_store),
     "df": inv.df,
     "bigram_dictionary": inv.bigram_dictionary,
     "permuterm_dictionary": inv.permuterm_dictionary,

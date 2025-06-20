@@ -40,3 +40,7 @@ docker-compose.override.yml
 # FastAPI / Uvicorn cache
 *.db
 instance/
+
+# Ignore precomputed binary files
+prebuilt/*.pkl
+prebuilt/*.npy

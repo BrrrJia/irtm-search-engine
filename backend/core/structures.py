@@ -11,6 +11,20 @@ class PostingsLinkedList:
 
     def add_posting(self, docID):
         new_posting = Posting(docID)
-        # we add the new positng at the beginning of the list
-        new_posting.next = self.head
+        new_posting.next = self.head # head insertion, in ascending order
         self.head = new_posting
+
+    def to_list(self):
+        values = []
+        current = self.head
+        while current:
+            values.append(current.docID)
+            current = current.next
+        return values # doc ids in ascending order [3,2,1]
+
+    @staticmethod
+    def from_list(doc_ids):
+        pll = PostingsLinkedList()
+        for doc_id in doc_ids:
+            pll.add_posting(doc_id) # doc ids in descending order [1,2,3]
+        return pll

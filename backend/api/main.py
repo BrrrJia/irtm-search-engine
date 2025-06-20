@@ -2,6 +2,7 @@ from core.indexing import InvertedIndex
 from core.retrieval import RetrievalEngine
 from core import config
 from core.classification import NaiveBayesClassifier
+from core.structures import PostingsLinkedList
 from api.routes import search, classify, evaluate, clustering
 from fastapi import FastAPI
 import logging
@@ -87,7 +88,10 @@ async def initialize_components():
     try:
         logger.info("Loading inverted index from prebuilt cache...")
         inv_dict = joblib.load("prebuilt/inverted_index_dict.pkl")
-        tfidf_matrix = np.load("prebuilt/tfidf_matrix.npy")
+        
+        inv_dict["postings_store"] = {pid: PostingsLinkedList.from_list(plist) 
+                                      for pid,plist in inv_dict["postings_store"].items()} # restore postings list from serialisation
+        tfidf_matrix = np.load("prebuilt/tfidf_matrix.npy",  allow_pickle=True)
 
         ret = RetrievalEngine(
             inv_dict["term_dictionary"],
@@ -151,7 +155,7 @@ async def initialize_components():
     # === Clustering data ===
     try:
         logger.info("Loading clustering data from cache...")
-        data = np.load("prebuilt/clustering_data.npy")
+        data = np.load("prebuilt/clustering_data.npy", allow_pickle=True)
         app.state.data = data
         logger.info("Clustering data loaded.")
     except Exception as e:
