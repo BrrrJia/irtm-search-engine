@@ -229,11 +229,11 @@ if st.session_state.get('api_ready', False):
             
             col1, col2 = st.columns(2)
             with col1:
-                name = st.text_input("Name", placeholder="Enter review name in German...")
+                name = st.text_input("Name*", placeholder="Enter review name in German...")
             with col2:
-                title = st.text_input("Title", placeholder="Enter review title in German...")
+                title = st.text_input("Title*", placeholder="Enter review title in German...")
             
-            review = st.text_area("Review Content", height=150,
+            review = st.text_area("Review Content*", height=150,
                                 placeholder="Enter review text in German...")
             
             submitted = st.form_submit_button("Classify Document", type="primary")
