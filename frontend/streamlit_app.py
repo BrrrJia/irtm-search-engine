@@ -460,7 +460,14 @@ if st.session_state.get('api_ready', False):
                         with col3:
                             timestamp = result.get('timestamp', 'N/A')
                             st.write("**Evaluation Time**")
-                            st.write(timestamp.split('T')[0] if 'T' in timestamp else timestamp)
+                            if isinstance(timestamp, str):
+                                try:
+                                    dt = datetime.fromisoformat(timestamp)
+                                    st.write(f"{dt.strftime('%Y-%m-%d %H:%M:%S')}")
+                                except ValueError:
+                                    st.write(f"{timestamp}")
+                            else:
+                                st.write("⚠️ Timestamp not available")
                         
                         # Metric interpretation
                         st.markdown("### Performance Interpretation")
