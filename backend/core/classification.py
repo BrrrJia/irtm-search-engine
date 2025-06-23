@@ -35,7 +35,7 @@ class NaiveBayesClassifier:
             total = sum(counts.values())
             default_p = 1 / (total + V_size)
             prob = Counter({t: (c + 1) / (total + V_size) for t, c in counts.items()})
-            #self.likelihood[label] = defaultdict(lambda: default_p, prob)
+            # self.likelihood[label] = defaultdict(lambda: default_p, prob)
             self.likelihood[label] = (dict(prob), default_p)
 
     def predict(self, tokens: list):
@@ -46,7 +46,7 @@ class NaiveBayesClassifier:
             log_prob = math.log(self.prior[cls])
 
             for t in tokens:
-                #p = self.likelihood[cls][t]
+                # p = self.likelihood[cls][t]
                 prob_dict, default_p = self.likelihood[cls]
                 p = prob_dict.get(t, default_p)
                 log_prob += math.log(p)

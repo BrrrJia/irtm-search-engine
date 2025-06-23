@@ -11,9 +11,9 @@ import joblib
 
 class InvertedIndex:
     def __init__(self, filename):
-        #self.term_dictionary = defaultdict(lambda: {"size_of_postings": 0, "postings_id": None})
+        # self.term_dictionary = defaultdict(lambda: {"size_of_postings": 0, "postings_id": None})
         self.term_dictionary = {}
-        #self.postings_store = defaultdict(PostingsLinkedList)
+        # self.postings_store = defaultdict(PostingsLinkedList)
         self.postings_store = {}
         self.posting_counter = 0
         self.bigram_dictionary = defaultdict(set)
@@ -37,12 +37,11 @@ class InvertedIndex:
                     self.posting_counter += 1
 
                 entry["size_of_postings"] += 1
-                
+
                 if entry["postings_id"] not in self.postings_store:
                     self.postings_store[entry["postings_id"]] = PostingsLinkedList()
 
                 self.postings_store[entry["postings_id"]].add_posting(docID)
-
 
     def bigram_tokenize_term(self, term):
         # convert term "bird" into bigram "$b", "bi", "ir", "rd", "d$"
@@ -108,7 +107,6 @@ class InvertedIndex:
                 self.tfidf_matrix[i, j] = tf * self.idf_vector[j]
 
         self.tfidf_matrix = self.tfidf_matrix.tocsr()
-
 
     def save(self):
         joblib.dump(self.postings_store, "prebuilt/postings_store.pkl")

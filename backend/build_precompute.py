@@ -9,9 +9,8 @@ from scipy.sparse import save_npz
 
 # --- Helpers ---
 def serialize_postings(postings_store):
-    return {
-        pid: plist.to_list() for pid, plist in postings_store.items()
-    }
+    return {pid: plist.to_list() for pid, plist in postings_store.items()}
+
 
 # create folder for pre-built data
 os.makedirs("prebuilt", exist_ok=True)
@@ -48,7 +47,7 @@ print("Preparing clustering data...")
 inv_game = InvertedIndex(config.TRAIN_PATH)
 inv_game.index()
 inv_game.build_tfidf_matrix()
-data = normalize(inv_game.tfidf_matrix[:config.K_MEANS_DATA_SIZE], norm="l2")
+data = normalize(inv_game.tfidf_matrix[: config.K_MEANS_DATA_SIZE], norm="l2")
 save_npz("prebuilt/clustering_data.npz", data)
 
 print("Clustering data saved.")

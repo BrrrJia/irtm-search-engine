@@ -28,16 +28,17 @@ def wait_for_api(api_url, timeout=180, interval=10):
         except requests.RequestException:
             logger.info(f"Waiting for API at {api_url}...")
         time.sleep(interval)
-    
+
     logger.error("API startup timed out.")
     return False
+
 
 # Page configuration
 st.set_page_config(
     page_title="IRTM - Information Retrieval & Text Mining",
     page_icon="🔍",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
 # get the api url
@@ -45,10 +46,10 @@ API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 logger.info(f"Using API_BASE_URL: {API_BASE_URL}")
 
 # waiting for api service before executing
-if 'api_ready' not in st.session_state:
+if "api_ready" not in st.session_state:
     st.title("IRTM System - Starting Up")
-    
-    with st.spinner(f'Waiting for API service... ({API_BASE_URL})'):
+
+    with st.spinner(f"Waiting for API service... ({API_BASE_URL})"):
         if wait_for_api(API_BASE_URL):
             st.session_state.api_ready = True
             st.success("API service is ready, loading application...")
@@ -61,12 +62,13 @@ if 'api_ready' not in st.session_state:
             st.stop()
 
 # If api is ready, then loading the application
-if st.session_state.get('api_ready', False):
+if st.session_state.get("api_ready", False):
     # API base configuration
     API_BASE_URL = st.sidebar.text_input("API Base URL", API_BASE_URL)
 
     # Custom CSS styles
-    st.markdown("""
+    st.markdown(
+        """
     <style>
         .main-header {
             font-size: 2.5rem;
@@ -98,16 +100,26 @@ if st.session_state.get('api_ready', False):
             text-align: center;
         }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # Main title
-    st.markdown('<div class="main-header">IRTM - Information Retrieval & Text Mining System</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="main-header">IRTM - Information Retrieval & Text Mining System</div>',
+        unsafe_allow_html=True,
+    )
 
     # Sidebar navigation
     st.sidebar.title("Navigation")
     selected_function = st.sidebar.selectbox(
         "Select Function",
-        ["Document Search", "Text Classification", "Classification Model Evaluation", "Document Clustering"]
+        [
+            "Document Search",
+            "Text Classification",
+            "Classification Model Evaluation",
+            "Document Clustering",
+        ],
     )
 
     # Check API connection status
@@ -128,36 +140,38 @@ if st.session_state.get('api_ready', False):
 
     # === Document Search Function ===
     if selected_function == "Document Search":
-        st.markdown('<div class="section-header">Document Search</div>', unsafe_allow_html=True)
-        
+        st.markdown(
+            '<div class="section-header">Document Search</div>', unsafe_allow_html=True
+        )
+
         # Search configuration
         col1, col2 = st.columns([3, 1])
-        
+
         with col1:
-            query = st.text_input("Enter search query", placeholder="e.g., slee* cat, cancer detect*, mental health, side effects vaccines")
-        
+            query = st.text_input(
+                "Enter search query",
+                placeholder="e.g., slee* cat, cancer detect*, mental health, side effects vaccines",
+            )
+
         with col2:
             search_mode = st.selectbox("Search Mode", ["term", "wildcard", "tfidf"])
-        
+
         # Search mode explanation
         with st.expander("ℹ️ Search Mode Information"):
             st.write("**Term**: Boolean search with exact terms")
             st.write("**Wildcard**: Pattern matching with * (asterisk) wildcard")
             st.write("**TF-IDF**: Similarity-based ranking search")
-        
+
         if st.button("Start Search", type="primary"):
             if query:
                 with st.spinner("Searching documents..."):
                     try:
-                        params = {
-                            "query": query,
-                            "mode": search_mode
-                        }
-                        
+                        params = {"query": query, "mode": search_mode}
+
                         start_time = time.time()
                         response = requests.get(f"{API_BASE_URL}/search", params=params)
                         end_time = time.time()
-                        
+
                         if response.status_code == 200:
                             try:
                                 results = response.json()
@@ -167,55 +181,68 @@ if st.session_state.get('api_ready', False):
                                 st.stop()
 
                             search_time = end_time - start_time
-                            
+
                             # Display search statistics
                             col1, col2, col3, col4 = st.columns(4)
                             with col1:
-                                st.metric("Total Results", results.get('total_count', 0))
+                                st.metric(
+                                    "Total Results", results.get("total_count", 0)
+                                )
                             with col2:
                                 st.metric("Search Time", f"{search_time:.3f}s")
                             with col3:
                                 st.metric("Search Mode", search_mode.upper())
                             with col4:
                                 st.metric("Query Terms", len(query.split()))
-                            
-                            st.success(f"✅ Found {results.get('total_count', 0)} documents")
-                            
+
+                            st.success(
+                                f"✅ Found {results.get('total_count', 0)} documents"
+                            )
+
                             # Display search results
-                            if 'results' in results and results['results']:
+                            if "results" in results and results["results"]:
                                 st.markdown("### Search Results")
-                                
-                                for i, doc in enumerate(results['results'], 1):
+
+                                for i, doc in enumerate(results["results"], 1):
                                     with st.container():
-                                        st.markdown(f"""
+                                        st.markdown(
+                                            f"""
                                         <div class="result-card">
                                             <h4>Document {i}: Tweet ID {doc.get('tweet_id', 'N/A')}</h4>
                                             <p>{doc.get('text', '')}</p>
                                             <small>Tweet ID: {doc.get('tweet_id', 'N/A')}</small>
                                         </div>
-                                        """, unsafe_allow_html=True)
-                                        
+                                        """,
+                                            unsafe_allow_html=True,
+                                        )
+
                                 # Create download data
-                                df_results = pd.DataFrame(results['results'])
+                                df_results = pd.DataFrame(results["results"])
                                 csv = df_results.to_csv(index=False)
                                 st.download_button(
                                     label="Download Results as CSV",
                                     data=csv,
                                     file_name=f"search_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                                    mime="text/csv"
+                                    mime="text/csv",
                                 )
                             else:
                                 st.info("No documents found matching your query")
-                        
+
                         elif response.status_code == 400:
-                            st.error("❌ Invalid search parameters. Please check your query.")
+                            st.error(
+                                "❌ Invalid search parameters. Please check your query."
+                            )
                         elif response.status_code == 503:
                             st.error("❌ Search service is currently unavailable.")
                         else:
-                            st.error(f"❌ Search failed with status code: {response.status_code}")
-                            
+                            st.error(
+                                f"❌ Search failed with status code: {response.status_code}"
+                            )
+
                     except requests.exceptions.RequestException:
-                        st.error("❌ Connection error. Please check if the API is running.")
+                        st.error(
+                            "❌ Connection error. Please check if the API is running."
+                        )
                     except Exception as e:
                         st.error(f"❌ Search error: {str(e)}")
             else:
@@ -223,37 +250,45 @@ if st.session_state.get('api_ready', False):
 
     # === Text Classification Function ===
     elif selected_function == "Text Classification":
-        st.markdown('<div class="section-header">Text Classification</div>', unsafe_allow_html=True)
-        
-        st.info("This classifier predicts documents(German game reviews) sentiment: **gut** (good) or **schlecht** (bad)")
-        
+        st.markdown(
+            '<div class="section-header">Text Classification</div>',
+            unsafe_allow_html=True,
+        )
+
+        st.info(
+            "This classifier predicts documents(German game reviews) sentiment: **gut** (good) or **schlecht** (bad)"
+        )
+
         # Classification input form
         with st.form("classification_form"):
             st.subheader("Document Information")
-            
+
             col1, col2 = st.columns(2)
             with col1:
-                name = st.text_input("Name*", placeholder="Enter review name in German...")
+                name = st.text_input(
+                    "Name*", placeholder="Enter review name in German..."
+                )
             with col2:
-                title = st.text_input("Title*", placeholder="Enter review title in German...")
-            
-            review = st.text_area("Review Content*", height=150,
-                                placeholder="Enter review text in German...")
-            
+                title = st.text_input(
+                    "Title*", placeholder="Enter review title in German..."
+                )
+
+            review = st.text_area(
+                "Review Content*",
+                height=150,
+                placeholder="Enter review text in German...",
+            )
+
             submitted = st.form_submit_button("Classify Document", type="primary")
-        
+
         if submitted:
             if name.strip() or title.strip() or review.strip():
                 with st.spinner("Classifying document..."):
                     try:
-                        data = {
-                            "name": name,
-                            "title": title,
-                            "review": review
-                        }
-                        
+                        data = {"name": name, "title": title, "review": review}
+
                         response = requests.post(f"{API_BASE_URL}/classify", json=data)
-                        
+
                         if response.status_code == 200:
                             try:
                                 result = response.json()
@@ -261,169 +296,245 @@ if st.session_state.get('api_ready', False):
                                 logger.error(f"Failed to parse JSON: {e}")
                                 st.error("⚠️ API returned invalid JSON response.")
                                 st.stop()
-                            
+
                             # Display classification result
                             col1, col2, col3 = st.columns(3)
-                            
+
                             with col1:
-                                label = result.get('label', 'Unknown')
-                                if label == 'gut':
+                                label = result.get("label", "Unknown")
+                                if label == "gut":
                                     st.success(f"🎯 Prediction: **{label}** (Good)")
-                                elif label == 'schlecht':
+                                elif label == "schlecht":
                                     st.error(f"🎯 Prediction: **{label}** (Bad)")
                                 else:
                                     st.info(f"🎯 Prediction: **{label}**")
-                            
+
                             with col2:
                                 combined_text = f"{name} {title} {review}".strip()
                                 st.metric("Text Length", len(combined_text))
-                            
+
                             with col3:
                                 st.metric("Word Count", len(combined_text.split()))
-                        
+
                         elif response.status_code == 400:
                             st.error("❌ Invalid input data. Please check your text.")
                         elif response.status_code == 503:
-                            st.error("❌ Classification service is currently unavailable.")
+                            st.error(
+                                "❌ Classification service is currently unavailable."
+                            )
                         else:
-                            st.error(f"❌ Classification failed with status code: {response.status_code}")
-                            
+                            st.error(
+                                f"❌ Classification failed with status code: {response.status_code}"
+                            )
+
                     except requests.exceptions.RequestException:
-                        st.error("❌ Connection error. Please check if the API is running.")
+                        st.error(
+                            "❌ Connection error. Please check if the API is running."
+                        )
                     except Exception as e:
                         st.error(f"❌ Classification error: {str(e)}")
             else:
-                st.warning("⚠️ Please provide at least one field (name, title, or review)")
-        
+                st.warning(
+                    "⚠️ Please provide at least one field (name, title, or review)"
+                )
+
         # Batch classification section
         st.markdown("---")
         st.subheader("Batch Classification")
-        
-        uploaded_file = st.file_uploader("Upload CSV file with columns: name, title, review", type=['csv'])
-        
+
+        uploaded_file = st.file_uploader(
+            "Upload CSV file with columns: name, title, review", type=["csv"]
+        )
+
         if uploaded_file is not None:
             try:
                 df = pd.read_csv(uploaded_file)
                 st.write("Preview of uploaded data:")
                 st.dataframe(df.head(), use_container_width=True)
-                
+
                 if st.button("Classify All Documents", type="secondary"):
-                    if all(col in df.columns for col in ['name', 'title', 'review']):
+                    if all(col in df.columns for col in ["name", "title", "review"]):
                         with st.spinner("Processing batch classification..."):
                             results = []
                             progress_bar = st.progress(0)
-                            
+
                             for i, row in df.iterrows():
                                 try:
                                     data = {
-                                        "name": str(row['name']) if pd.notna(row['name']) else "",
-                                        "title": str(row['title']) if pd.notna(row['title']) else "",
-                                        "review": str(row['review']) if pd.notna(row['review']) else ""
+                                        "name": (
+                                            str(row["name"])
+                                            if pd.notna(row["name"])
+                                            else ""
+                                        ),
+                                        "title": (
+                                            str(row["title"])
+                                            if pd.notna(row["title"])
+                                            else ""
+                                        ),
+                                        "review": (
+                                            str(row["review"])
+                                            if pd.notna(row["review"])
+                                            else ""
+                                        ),
                                     }
-                                    
-                                    response = requests.post(f"{API_BASE_URL}/classify", json=data)
-                                    
+
+                                    response = requests.post(
+                                        f"{API_BASE_URL}/classify", json=data
+                                    )
+
                                     if response.status_code == 200:
                                         try:
                                             result = response.json()
                                         except ValueError as e:
                                             logger.error(f"Failed to parse JSON: {e}")
-                                            st.error("⚠️ API returned invalid JSON response.")
+                                            st.error(
+                                                "⚠️ API returned invalid JSON response."
+                                            )
                                             st.stop()
-                                        results.append({
-                                            'row_index': i,
-                                            'name': data['name'][:50] + '...' if len(data['name']) > 50 else data['name'],
-                                            'title': data['title'][:50] + '...' if len(data['title']) > 50 else data['title'],
-                                            'prediction': result.get('label', 'Unknown'),
-                                            'status': 'Success'
-                                        })
+                                        results.append(
+                                            {
+                                                "row_index": i,
+                                                "name": (
+                                                    data["name"][:50] + "..."
+                                                    if len(data["name"]) > 50
+                                                    else data["name"]
+                                                ),
+                                                "title": (
+                                                    data["title"][:50] + "..."
+                                                    if len(data["title"]) > 50
+                                                    else data["title"]
+                                                ),
+                                                "prediction": result.get(
+                                                    "label", "Unknown"
+                                                ),
+                                                "status": "Success",
+                                            }
+                                        )
                                     else:
-                                        results.append({
-                                            'row_index': i,
-                                            'name': data['name'][:50] + '...' if len(data['name']) > 50 else data['name'],
-                                            'title': data['title'][:50] + '...' if len(data['title']) > 50 else data['title'],
-                                            'prediction': 'Error',
-                                            'status': 'Failed'
-                                        })
-                                    
+                                        results.append(
+                                            {
+                                                "row_index": i,
+                                                "name": (
+                                                    data["name"][:50] + "..."
+                                                    if len(data["name"]) > 50
+                                                    else data["name"]
+                                                ),
+                                                "title": (
+                                                    data["title"][:50] + "..."
+                                                    if len(data["title"]) > 50
+                                                    else data["title"]
+                                                ),
+                                                "prediction": "Error",
+                                                "status": "Failed",
+                                            }
+                                        )
+
                                     progress_bar.progress((i + 1) / len(df))
-                                    
+
                                 except Exception as e:
-                                    results.append({
-                                        'row_index': i,
-                                        'name': 'Error',
-                                        'title': 'Error', 
-                                        'prediction': 'Error',
-                                        'status': f'Exception: {str(e)}'
-                                    })
-                            
+                                    results.append(
+                                        {
+                                            "row_index": i,
+                                            "name": "Error",
+                                            "title": "Error",
+                                            "prediction": "Error",
+                                            "status": f"Exception: {str(e)}",
+                                        }
+                                    )
+
                             # Display batch results
                             if results:
                                 df_results = pd.DataFrame(results)
                                 st.success(f"✅ Processed {len(results)} documents")
-                                
+
                                 # Classification distribution
-                                prediction_counts = df_results['prediction'].value_counts()
-                                fig_pie = px.pie(values=prediction_counts.values, names=prediction_counts.index,
-                                               title='Classification Distribution')
+                                prediction_counts = df_results[
+                                    "prediction"
+                                ].value_counts()
+                                fig_pie = px.pie(
+                                    values=prediction_counts.values,
+                                    names=prediction_counts.index,
+                                    title="Classification Distribution",
+                                )
                                 st.plotly_chart(fig_pie, use_container_width=True)
-                                
+
                                 # Results table
                                 st.dataframe(df_results, use_container_width=True)
-                                
+
                                 # Download results
                                 csv_results = df_results.to_csv(index=False)
                                 st.download_button(
                                     label="Download Classification Results",
                                     data=csv_results,
                                     file_name=f"classification_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                                    mime="text/csv"
+                                    mime="text/csv",
                                 )
                     else:
-                        st.error("❌ CSV file must contain 'name', 'title', and 'review' columns")
+                        st.error(
+                            "❌ CSV file must contain 'name', 'title', and 'review' columns"
+                        )
             except Exception as e:
                 st.error(f"❌ Error reading CSV file: {str(e)}")
 
     # === Document Clustering Function ===
     elif selected_function == "Document Clustering":
-        st.markdown('<div class="section-header">Document Clustering Analysis</div>', unsafe_allow_html=True)
-        
-        st.info("This function performs K-means clustering on document vectors and generates visualization")
-        
+        st.markdown(
+            '<div class="section-header">Document Clustering Analysis</div>',
+            unsafe_allow_html=True,
+        )
+
+        st.info(
+            "This function performs K-means clustering on document vectors and generates visualization"
+        )
+
         if st.button("Generate Clustering Visualization", type="primary"):
             with st.spinner("Performing clustering analysis..."):
                 try:
                     response = requests.get(f"{API_BASE_URL}/clustering")
-                    
+
                     if response.status_code == 200:
                         # Display the clustering image
                         image = Image.open(io.BytesIO(response.content))
-                        
+
                         st.success("✅ Clustering analysis completed successfully")
-                        
+
                         # Display clustering visualization
-                        st.image(image, caption="K-means Clustering Visualization", use_container_width=True)
-                        
+                        st.image(
+                            image,
+                            caption="K-means Clustering Visualization",
+                            use_container_width=True,
+                        )
+
                         # Provide download option
                         st.download_button(
                             label="Download Clustering Plot",
                             data=response.content,
                             file_name=f"clustering_plot_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png",
-                            mime="image/png"
+                            mime="image/png",
                         )
-                        
+
                         # Additional information
                         with st.expander("ℹ️ Clustering Information"):
                             st.write("- **Algorithm**: K-means clustering")
-                            st.write("- **Data**: Document TF-IDF vectors (first 200 documents)")
-                            st.write("- **Highlighted**: Compact clusters with RSS values between 0 and 1")
-                            st.write("- **Visualization**: 2D projection of document clusters")
-                    
+                            st.write(
+                                "- **Data**: Document TF-IDF vectors (first 200 documents)"
+                            )
+                            st.write(
+                                "- **Highlighted**: Compact clusters with RSS values between 0 and 1"
+                            )
+                            st.write(
+                                "- **Visualization**: 2D projection of document clusters"
+                            )
+
                     elif response.status_code == 503:
-                        st.error("❌ Clustering service is currently unavailable. Data not prepared.")
+                        st.error(
+                            "❌ Clustering service is currently unavailable. Data not prepared."
+                        )
                     else:
-                        st.error(f"❌ Clustering failed with status code: {response.status_code}")
-                        
+                        st.error(
+                            f"❌ Clustering failed with status code: {response.status_code}"
+                        )
+
                 except requests.exceptions.RequestException:
                     st.error("❌ Connection error. Please check if the API is running.")
                 except Exception as e:
@@ -431,15 +542,20 @@ if st.session_state.get('api_ready', False):
 
     # === Model Evaluation Function ===
     elif selected_function == "Classification Model Evaluation":
-        st.markdown('<div class="section-header">Classification Model Evaluation</div>', unsafe_allow_html=True)
-        
-        st.info("Evaluate the trained Naive Bayes classifier performance using test dataset")
-        
+        st.markdown(
+            '<div class="section-header">Classification Model Evaluation</div>',
+            unsafe_allow_html=True,
+        )
+
+        st.info(
+            "Evaluate the trained Naive Bayes classifier performance using test dataset"
+        )
+
         if st.button("Run Model Evaluation", type="primary"):
             with st.spinner("Evaluating classification model..."):
                 try:
                     response = requests.get(f"{API_BASE_URL}/classify/evaluate")
-                    
+
                     if response.status_code == 200:
                         try:
                             result = response.json()
@@ -447,22 +563,22 @@ if st.session_state.get('api_ready', False):
                             logger.error(f"Failed to parse JSON: {e}")
                             st.error("⚠️ API returned invalid JSON response.")
                             st.stop()
-                        
+
                         st.success("✅ Model evaluation completed successfully")
-                        
+
                         # Display evaluation metrics
                         col1, col2, col3 = st.columns(3)
-                        
+
                         with col1:
-                            accuracy = float(result.get('Accuracy', '0'))
+                            accuracy = float(result.get("Accuracy", "0"))
                             st.metric("Accuracy", f"{accuracy:.4f}")
-                        
+
                         with col2:
-                            f1_score = float(result.get('F1', '0'))
+                            f1_score = float(result.get("F1", "0"))
                             st.metric("F1 Score", f"{f1_score:.4f}")
-                        
+
                         with col3:
-                            timestamp = result.get('timestamp', 'N/A')
+                            timestamp = result.get("timestamp", "N/A")
                             st.write("**Evaluation Time**")
                             if isinstance(timestamp, str):
                                 try:
@@ -472,48 +588,70 @@ if st.session_state.get('api_ready', False):
                                     st.write(f"{timestamp}")
                             else:
                                 st.write("⚠️ Timestamp not available")
-                        
+
                         # Metric interpretation
                         st.markdown("### Performance Interpretation")
-                        
-                        performance_level = "Excellent" if accuracy > 0.9 else "Good" if accuracy > 0.8 else "Fair" if accuracy > 0.7 else "Poor"
-                        
+
+                        performance_level = (
+                            "Excellent"
+                            if accuracy > 0.9
+                            else (
+                                "Good"
+                                if accuracy > 0.8
+                                else "Fair" if accuracy > 0.7 else "Poor"
+                            )
+                        )
+
                         if accuracy > 0.8:
-                            st.success(f"🎯 **{performance_level}** classification performance (Accuracy: {accuracy:.2%})")
+                            st.success(
+                                f"🎯 **{performance_level}** classification performance (Accuracy: {accuracy:.2%})"
+                            )
                         elif accuracy > 0.6:
-                            st.warning(f"⚠️ **{performance_level}** classification performance (Accuracy: {accuracy:.2%})")
+                            st.warning(
+                                f"⚠️ **{performance_level}** classification performance (Accuracy: {accuracy:.2%})"
+                            )
                         else:
-                            st.error(f"❌ **{performance_level}** classification performance (Accuracy: {accuracy:.2%})")
-                        
-                        
+                            st.error(
+                                f"❌ **{performance_level}** classification performance (Accuracy: {accuracy:.2%})"
+                            )
+
                         # Performance guidelines
                         with st.expander("ℹ️ Metric Definitions"):
-                            st.write("**Accuracy**: Proportion of correct predictions among total predictions")
-                            st.write("**F1 Score**: Harmonic mean of precision and recall")
+                            st.write(
+                                "**Accuracy**: Proportion of correct predictions among total predictions"
+                            )
+                            st.write(
+                                "**F1 Score**: Harmonic mean of precision and recall"
+                            )
                             st.write("**Performance Levels**:")
                             st.write("- Excellent: > 90%")
-                            st.write("- Good: 80-90%") 
+                            st.write("- Good: 80-90%")
                             st.write("- Fair: 70-80%")
                             st.write("- Poor: < 70%")
-                    
+
                     elif response.status_code == 503:
-                        st.error("❌ Classification service is currently unavailable. Cannot perform evaluation.")
+                        st.error(
+                            "❌ Classification service is currently unavailable. Cannot perform evaluation."
+                        )
                     else:
-                        st.error(f"❌ Evaluation failed with status code: {response.status_code}")
-                        
+                        st.error(
+                            f"❌ Evaluation failed with status code: {response.status_code}"
+                        )
+
                 except requests.exceptions.RequestException:
                     st.error("❌ Connection error. Please check if the API is running.")
                 except Exception as e:
                     st.error(f"❌ Evaluation error: {str(e)}")
-        
+
         # Model information section
         st.markdown("---")
         st.markdown("### 🤖 Model Information")
-        
+
         col1, col2 = st.columns(2)
-        
+
         with col1:
-            st.info("""
+            st.info(
+                """
             **Algorithm**: Naive Bayes Classifier
             
             **Task**: German game review sentiment classification
@@ -521,21 +659,27 @@ if st.session_state.get('api_ready', False):
             **Classes**: 
             - gut (good)
             - schlecht (bad)
-            """)
-        
+            """
+            )
+
         with col2:
-            st.info("""
+            st.info(
+                """
             **Features**: 
             - Review name
             - Review title  
             - Review content
-            """)
+            """
+            )
 
     # Footer
     st.markdown("---")
-    st.markdown("""
+    st.markdown(
+        """
     <div style='text-align: center; color: #666; font-size: 0.9em;'>
         IRTM System - Information Retrieval & Text Mining<br>
         Built with Streamlit & FastAPI | 📧 Contact: youjiaim@protonmail.com
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )

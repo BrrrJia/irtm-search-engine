@@ -44,6 +44,7 @@ app = FastAPI(
     openapi_tags=tags_metadata,
 )
 
+
 @app.get("/", tags=["status"])
 def root():
     return {
@@ -56,9 +57,10 @@ def root():
             "/evaluate",
             "/clustering",
             "/status",
-            "/health"
-        ]
+            "/health",
+        ],
     }
+
 
 @app.get("/health", tags=["status"])
 def health():
@@ -66,13 +68,9 @@ def health():
         "inverted_index_loaded": app.state.inv is not None,
         "retrieval_engine_loaded": app.state.ret is not None,
         "classifier_loaded": app.state.cls is not None,
-        "clustering_data_loaded": app.state.data is not None
+        "clustering_data_loaded": app.state.data is not None,
     }
-    return {
-        "status": "ok",
-        "ready": all(details.values()),
-        "details": details
-    }
+    return {"status": "ok", "ready": all(details.values()), "details": details}
 
 
 # register API routes
@@ -80,6 +78,7 @@ app.include_router(search.router)
 app.include_router(classify.router)
 app.include_router(evaluate.router)
 app.include_router(clustering.router)
+
 
 # initialisation
 @app.on_event("startup")
@@ -89,8 +88,10 @@ async def initialize_components():
         logger.info("Loading inverted index from prebuilt cache...")
         inv = joblib.load("prebuilt/inverted_index.pkl")
         inv.postings_store = joblib.load("prebuilt/postings_store.pkl")
-        inv.postings_store = {pid: PostingsLinkedList.from_list(plist) 
-                                      for pid,plist in inv.postings_store.items()} # restore postings list from serialisation
+        inv.postings_store = {
+            pid: PostingsLinkedList.from_list(plist)
+            for pid, plist in inv.postings_store.items()
+        }  # restore postings list from serialisation
         inv.tfidf_matrix = load_npz("prebuilt/tfidf_matrix.npz")
         print("tf idf matrix type", inv.tfidf_matrix.shape)
 
@@ -102,7 +103,7 @@ async def initialize_components():
             inv.permuterm_dictionary,
             inv.term_to_index,
             inv.idf_vector,
-            inv.tfidf_matrix
+            inv.tfidf_matrix,
         )
         app.state.inv = inv
         app.state.ret = ret
@@ -165,7 +166,9 @@ async def initialize_components():
             inv_game = InvertedIndex(config.TRAIN_PATH)
             inv_game.index()
             inv_game.build_tfidf_matrix()
-            data = normalize(inv_game.tfidf_matrix[:config.K_MEANS_DATA_SIZE], norm="l2")
+            data = normalize(
+                inv_game.tfidf_matrix[: config.K_MEANS_DATA_SIZE], norm="l2"
+            )
             app.state.data = data
             logger.info("Clustering data rebuilt at runtime.")
         except Exception as e:

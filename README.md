@@ -129,7 +129,8 @@ If the UI shows “API not available”:
   - 200 entries used for clustering
 - **games-test.csv**
   - 44,233 entries used for classification evaluation
-- Source: [LREC 2016 Paper](http://www.lrec-conf.org/proceedings/lrec2016/pdf/59_Paper.pdf)
+
+> Both `games-train.csv` and `games-test.csv` are derived from the [LREC 2016 paper](http://www.lrec-conf.org/proceedings/lrec2016/pdf/59_Paper.pdf).
 
 ---
 

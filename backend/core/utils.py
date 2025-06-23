@@ -71,7 +71,7 @@ def read_data(filename, cls=False, limit=config.INDEX_DATA_SIZE):
             encoding="utf-8",
             engine="python",
             quoting=csv.QUOTE_NONE,
-            nrows=limit
+            nrows=limit,
         )
         df["text"] = df[["name", "title", "review"]].fillna("").agg(" ".join, axis=1)
         df = df.drop(["name", "title", "review"], axis=1)
@@ -86,7 +86,7 @@ def read_data(filename, cls=False, limit=config.INDEX_DATA_SIZE):
             encoding="utf-8",
             engine="python",
             quoting=csv.QUOTE_NONE,
-            nrows=limit
+            nrows=limit,
         )
         df = df.drop_duplicates(subset="tweetID", keep="first").reset_index(
             drop=True
