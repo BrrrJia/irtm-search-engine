@@ -7,8 +7,6 @@
 
 It combines classical IR techniques(inverted indexing, boolean query, TF-IDF) with basic machine learning methods such as Naive Bayes classification and K-means clustering.
 
----
-
 ## System Architecture
 
 The system consists of three core pipelines:
@@ -29,8 +27,6 @@ The system consists of three core pipelines:
 - **Classification**: Supervised sentiment classification using a Naive Bayes model trained on TF-IDF features
 - **Evaluation**: Model performance evaluation using Accuracy and F1-score
 - **Clustering**: Unsupervised document clustering using K-means and optimal K-means based on TF-IDF vectors
-
----
 
 ## How to Run
 
@@ -69,8 +65,6 @@ python -m cli.main --task classify # classification task
 python -m cli.main --task cluster # clustering task
 ```
 
----
-
 ### Option 2: Run with Docker
 
 This mode runs both the backend API (FastAPI) and frontend UI (Streamlit) in isolated containers.
@@ -83,7 +77,7 @@ git clone https://github.com/BrrrJia/irtm-search-engine.git
 
 1. Build and start the services
 
-⚠️ Make sure Docker is running **before** executing the following command.
+> Make sure Docker is running **before** executing the following command.
 
 You can check with `docker info`. If not started, launch Docker Desktop first.
 
@@ -98,15 +92,13 @@ This will:
   - FastAPI at `http://localhost:8000`
   - Streamlit at `http://localhost:8501`
 
----
-
 ### Option 3: Hosted on Render
 
 The app is deployed and publicly accessible via Render.
 
-🔗 Visit: [https://irtm-ui.onrender.com](https://irtm-ui.onrender.com/)
+Visit: [https://irtm-ui.onrender.com](https://irtm-ui.onrender.com/)
 
-> ⚠️ Note: Render services may take up to 3-4 minutes to cold-start.
+> Note: Render services may take up to 3-4 minutes to cold-start.
 
 ### Troubleshooting
 
@@ -115,8 +107,6 @@ If the UI shows “API not available”:
 - The backend may still be warming up
 - Refresh the page after 30 seconds
 - Alternatively, check `/health` endpoints on the backend manually
-
----
 
 ## Data
 
@@ -131,8 +121,6 @@ If the UI shows “API not available”:
   - 44,233 entries used for classification evaluation
 
 > Both `games-train.csv` and `games-test.csv` are derived from the [LREC 2016 paper](http://www.lrec-conf.org/proceedings/lrec2016/pdf/59_Paper.pdf).
-
----
 
 ## Python Packages
 
@@ -149,8 +137,6 @@ Core packages used in this project include:
 - `streamlit`
 - `joblib`
 - `requests`
-
----
 
 ## License & Credits
 
