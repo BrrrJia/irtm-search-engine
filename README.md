@@ -81,9 +81,7 @@ git clone https://github.com/BrrrJia/irtm-search-engine.git
 
 2. Build and start the services
 
-> Make sure Docker is running **before** executing the following command.
-
-You can check with `docker info`. If not started, launch Docker Desktop first.
+> Make sure Docker is running **before** executing the following command. You can check with `docker info`. If not started, launch Docker Desktop first.
 
 ```bash
 docker compose -f docker-compose.yml up --build
