@@ -40,13 +40,17 @@ This mode allows you to interact with the IRTM engine via the command line for q
 git clone https://github.com/BrrrJia/irtm-search-engine.git
 ```
 
-1. Set up a Python environment and install dependencies
+2. Set up a Python environment and install dependencies
 
 ```bash
 cd backend
 python -m venv irtm-env
-source irtm-env/bin/activate  # or .\env\Scripts\activate on Windows
-pip install -r cli/requirements.txt
+# Activate the virtual environment
+source irtm-env/bin/activate      # On macOS/Linux
+# .\irtm-env\Scripts\activate     # On Windows
+
+# Install required packages
+pip install -r requirements.txt
 ```
 
 3. Choose a mode to run:
@@ -75,7 +79,7 @@ This mode runs both the backend API (FastAPI) and frontend UI (Streamlit) in iso
 git clone https://github.com/BrrrJia/irtm-search-engine.git
 ```
 
-1. Build and start the services
+2. Build and start the services
 
 > Make sure Docker is running **before** executing the following command.
 
