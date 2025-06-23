@@ -20,8 +20,11 @@ def wait_for_api(api_url, timeout=180, interval=10):
         try:
             response = requests.get(f"{api_url}/health", timeout=10)
             if response.status_code == 200:
-                logger.info("API is available.")
-                return True
+                resp_json = response.json()
+                logger.info(f"Health check passed: {resp_json}")
+                if resp_json.get("ready"):
+                    logger.info("API is ready!")
+                    return True
         except requests.RequestException:
             logger.info(f"Waiting for API at {api_url}...")
         time.sleep(interval)
@@ -54,6 +57,8 @@ if 'api_ready' not in st.session_state:
         else:
             st.error("API service runs timeout，Please check its status.")
             st.info(f"Please check if the API service {API_BASE_URL} is running properly.")
+            if st.button("Retry"):
+                st.rerun()
             st.stop()
 
 # If api is ready, then loading the application

@@ -62,16 +62,16 @@ def root():
 
 @app.get("/health", tags=["status"])
 def health():
-    return {"status": "ok"}
-
-
-@app.get("/status", tags=["status"])
-def check_status():
-    return {
+    details = {
         "inverted_index_loaded": app.state.inv is not None,
         "retrieval_engine_loaded": app.state.ret is not None,
         "classifier_loaded": app.state.cls is not None,
         "clustering_data_loaded": app.state.data is not None
+    }
+    return {
+        "status": "ok",
+        "ready": all(details.values()),
+        "details": details
     }
 
 
