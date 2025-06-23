@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def wait_for_api(api_url, timeout=180, interval=10):
+def wait_for_api(api_url, timeout=360, interval=10):
     start_time = time.time()
     while time.time() - start_time < timeout:
         try:
@@ -49,7 +49,7 @@ logger.info(f"Using API_BASE_URL: {API_BASE_URL}")
 if "api_ready" not in st.session_state:
     st.title("IRTM System - Starting Up")
 
-    with st.spinner(f"Waiting for API service... ({API_BASE_URL})"):
+    with st.spinner(f"Waiting for API service({API_BASE_URL})...(this may take 2–5 minutes due to server cold start)"):
         if wait_for_api(API_BASE_URL):
             st.session_state.api_ready = True
             st.success("API service is ready, loading application...")
