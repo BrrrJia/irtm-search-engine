@@ -56,7 +56,6 @@ if 'api_ready' not in st.session_state:
             st.rerun()
         else:
             st.error("API service runs timeout，Please check its status.")
-            st.info(f"Please check if the API service {API_BASE_URL} is running properly.")
             if st.button("Retry"):
                 st.rerun()
             st.stop()
